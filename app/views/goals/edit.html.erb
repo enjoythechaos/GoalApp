@@ -1,0 +1,43 @@
+<H1>Goal Edit Page</H1>
+
+<form action="<%= goal_url(@goal) %>" method="post">
+  <input type="hidden" name="_method" value="PATCH">
+  <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+  <label>
+    Title
+    <input type="text" name="goal[title]" value="<%= @goal.title %>">
+  </label>
+  <BR>
+  <label>
+    Description<BR>
+    <textarea name="goal[description]" rows="8" cols="40"><%= @goal.description %></textarea>
+  </label>
+  <BR>
+  <label>
+    Visibility<BR>
+    <label>
+      Private
+      <input type="radio" name="goal[visibility]" value="Private" <%= "checked" if @goal.visibility == 'Private'%> >
+    </label>
+    <label>
+      Public
+      <input type="radio" name="goal[visibility]" value="Public" <%= "checked" if @goal.visibility == 'Public' %>>
+    </label>
+  </label>
+  <BR>
+  <label>
+    Due Date
+    <input type="date" name="goal[due_date]" value=<%= @goal.due_date %>>
+  </label>
+  <BR>
+  <label>
+    Status
+    <select name="goal[status]">
+      <option value="not_started" <%= "selected" if @goal.status == 'not_started' %>>Not Started</option>
+      <option value="in_progress" <%= "selected" if @goal.status == 'in_progress' %>>In Progress</option>
+      <option value="completed" <%= "selected" if @goal.status == 'completed' %>>Completed</option>
+    </select>
+  </label>
+  <BR>
+  <input type="submit" value="Update Goal">
+</form>

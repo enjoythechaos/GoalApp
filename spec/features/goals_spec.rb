@@ -87,6 +87,88 @@ feature "goals" do
       expect(page).to have_content 'Buy TP'
     end
   end
+
+  feature "Goals Show Page" do
+    before :each do
+      user = User.create!(username: 'jeff', password: 'abcdef')
+      goal1 = Goal.create(title: 'tie shoes', description: 'bunny ear method not allowed',
+          visibility: 'Private', status: 'pending', user_id: user.id)
+      goal2 = Goal.create(title: 'Call Grandma',
+          description: 'Not during wheel of fortune (7:30PM)',
+          visibility: 'Public', status: 'pending', user_id: user.id)
+      sign_in("jeff")
+      visit goals_url
+      click_link "tie shoes"
+    end
+
+    it "brings you to a goal show page when clicking the goal's link on the index page" do
+      expect(page).to have_content('bunny ear method not allowed')
+    end
+
+    feature "Delete Goal" do
+      it "has a delete button on the show page if you are the user who created it" do
+        expect(page).to have_button("Delete Goal")
+      end
+
+      it "doesn't have a delete button on the show page if you aren't the user who created it" do
+        sign_up("mike")
+        visit goals_url
+        click_link "Call Grandma"
+        expect(page).not_to have_button("Delete Goal")
+      end
+
+      it "redirects you to the index page when you click the delete button" do
+        click_button "Delete Goal"
+        expect(page).to have_content("Goals")
+      end
+
+      it "reflects that the goal has been deleted when returning to the index page" do
+        click_button "Delete Goal"
+        expect(page).to have_content("Goals")
+        expect(page).not_to have_content("tie shoes")
+      end
+    end
+
+    feature "Edit Goal Page" do
+      it "has an edit button on the show page if you are the user who created it" do
+        expect(page).to have_button("Edit Goal")
+      end
+
+      it "doesn't have an edit button on the show page if you aren't the user who created it" do
+        sign_up("mike")
+        visit goals_url
+        click_link "Call Grandma"
+        expect(page).not_to have_button("Edit Goal")
+      end
+
+      it "cannot be visited except by the user who created the goal" do
+        sign_up("mike")
+        visit edit_goal_url(Goal.find_by(title: 'Call Grandma'))
+        expect(page).to have_content "Goal Show Page"
+      end
+
+      it "takes you to an edit form when you click the edit button" do
+        click_button "Edit Goal"
+        expect(page).to have_content("Goal Edit Page")
+      end
+
+      it "has the field pre-populated with the values of the goal being edited" do
+        click_button "Edit Goal"
+        expect(find_field('Title').value).to eq('tie shoes')
+        expect(find_field('Description').value).to eq('bunny ear method not allowed')
+      end
+
+      feature "Update Goal" do
+        it "saves changes when you edit the fields" do
+          click_button "Edit Goal"
+          fill_in "Description", with: "Not during Wheel of Fortune (7:30 PM) or Matlock (9:00 PM)"
+          click_button "Update Goal"
+          expect(page).to have_content("Matlock")
+        end
+      end
+    end
+
+  end
 end
 #
 # feature "logging in" do

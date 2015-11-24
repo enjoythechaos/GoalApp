@@ -2,13 +2,13 @@
 
 Your Goals:<BR>
 <% current_user.goals.each do |goal| %>
-  <%= goal.title %>
+  <%= link_to goal.title, goal_url(goal.id) %>
   <br>
 <% end %>
 
 Other People's Public Goals<BR>
 <% @others_public_goals.each do |goal| %>
-  <%= goal.title %>
+  <%= link_to goal.title, goal_url(goal.id) %>
   <br>
 <% end %>
 <BR>
