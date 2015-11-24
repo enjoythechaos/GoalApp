@@ -1,0 +1,15 @@
+<H1>Goals</H1>
+
+Your Goals:<BR>
+<% current_user.goals.each do |goal| %>
+  <%= goal.title %>
+  <br>
+<% end %>
+
+Other People's Public Goals<BR>
+<% @others_public_goals.each do |goal| %>
+  <%= goal.title %>
+  <br>
+<% end %>
+<BR>
+<%= button_to "Add Goal", new_goal_url, method: :get %>
